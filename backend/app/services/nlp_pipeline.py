@@ -17,11 +17,13 @@ def _get_model():
     return _model
 
 def get_embedding(text: str):
-    model = _get_model()
+    from sentence_transformers import SentenceTransformer
+    model = SentenceTransformer("all-MiniLM-L6-v2")
     return model.encode(text).tolist()
 
 def extract_entities(text: str):
-    nlp = _get_nlp()
+    import spacy
+    nlp = spacy.load("en_core_web_sm")
     doc = nlp(text)
     skills = [ent.text for ent in doc.ents if ent.label_ in ["ORG", "PRODUCT", "SKILL"]]
     return list(set(skills))
