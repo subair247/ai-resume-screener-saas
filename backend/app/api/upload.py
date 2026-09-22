@@ -3,11 +3,11 @@ from sqlalchemy.orm import Session
 import os
 import re
 import spacy
-from backend.app.core.database import get_db
-from backend.app.models.candidate import Candidate
-from backend.app.services.parser import parse_pdf, parse_docx
-from backend.app.services.nlp_pipeline import extract_entities, get_embedding
-from backend.app.services.faiss_index import faiss_db
+from app.core.database import get_db
+from app.models.candidate import Candidate
+from app.services.parser import parse_pdf, parse_docx
+from app.services.nlp_pipeline import extract_entities, get_embedding
+from app.services.faiss_index import faiss_db
 
 router = APIRouter(prefix="/upload", tags=["Upload & Parsing"])
 

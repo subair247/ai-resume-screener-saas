@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 import re
-from backend.app.core.database import get_db
-from backend.app.models.candidate import Candidate
-from backend.app.models.job import Job  
-from backend.app.schemas.screening_schema import JobCreate
-from backend.app.services.nlp_pipeline import get_embedding
-from backend.app.services.faiss_index import faiss_db
-from backend.app.services.ai_service import generate_interview_questions
-from backend.app.services.email_service import send_interview_questions_email
+from app.core.database import get_db
+from app.models.candidate import Candidate
+from app.models.job import Job  
+from app.schemas.screening_schema import JobCreate
+from app.services.nlp_pipeline import get_embedding
+from app.services.faiss_index import faiss_db
+from app.services.ai_service import generate_interview_questions
+from app.services.email_service import send_interview_questions_email
 
 router = APIRouter(prefix="/screening", tags=["Screening & Ranking"])
 

@@ -1,9 +1,9 @@
 from typing import List
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.core.database import engine, Base
-from backend.app.models import user, candidate, job
-from backend.app.api import auth, upload, screening, job
+from app.core.database import engine, Base
+from app.models import user, candidate, job
+from app.api import auth, upload, screening, job
 
 Base.metadata.create_all(bind=engine)
 

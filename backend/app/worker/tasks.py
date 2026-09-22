@@ -1,5 +1,5 @@
-from backend.app.worker.celery_app import celery_app
-from backend.app.services.nlp_pipeline import get_embedding, extract_entities
+from app.worker.celery_app import celery_app
+from app.services.nlp_pipeline import get_embedding, extract_entities
 
 @celery_app.task(name="process_resume_background")
 def process_resume_background(file_text: str):
