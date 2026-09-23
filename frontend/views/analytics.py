@@ -10,8 +10,8 @@ def render():
         results = st.session_state["matched_results"]
         df = pd.DataFrame(results)
         
-        if not df.empty and "candidate_id" in df.columns:
-            df = df.drop_duplicates(subset=["candidate_id"])
+        if not df.empty and "email" in df.columns:
+            df = df.drop_duplicates(subset=["email"], keep="last")
             
         st.subheader("Overview Metrics")
         col1, col2, col3 = st.columns(3)
