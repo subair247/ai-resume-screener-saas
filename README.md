@@ -54,11 +54,13 @@ graph TD
 ---
 ## 🚀 Key Features
 
-* **Bulk Resume Upload & Parsing:** Seamlessly handles multiple PDF and DOCX candidate uploads, extracting structured profile information.
-* **Semantic Resume Scoring & Gap Analysis:** Leverages vector embeddings and semantic similarity metrics to score candidates against job descriptions, featuring detailed section-wise breakdowns and missing keyword identification.
-* **AI-Powered Interview Question Generator:** Dynamically generates custom, rigorous technical interview prompts tailored to each candidate's unique project history and skill gaps using LLM integration.
-* **Automated Recruiter Notifications:** Dispatches structured interview question reports directly to 
-hiring managers via a secure SMTP-backed email pipeline.
+Bulk Resume Upload & Parsing: Seamlessly handles multiple PDF and DOCX candidate uploads, extracting structured profile information across both IT and non-IT domains.
+
+Semantic Resume Scoring & Gap Analysis: Leverages vector embeddings and semantic similarity metrics to score candidates against job descriptions, featuring detailed section-wise breakdowns and missing keyword identification.
+
+AI-Powered Interview Question Generator: Dynamically generates custom, rigorous technical and behavioral interview prompts tailored to each candidate's unique project history and skill gaps using the Google Gemini LLM integration.
+
+Automated Recruiter Notifications: Dispatches structured interview question reports directly to any hiring manager or user via a secure, API-driven Brevo transactional email pipeline with verified sender support.
 
 ---
 ## 🛠️ Tech Stack
@@ -112,6 +114,8 @@ Recruiters look closely at how developers troubleshoot and resolve real-world ar
    ALGORITHM="HS256"
    ACCESS_TOKEN_EXPIRE_MINUTES=30
    GEMINI_API_KEY="your-gemini-api-key"
+   BREVO_API_KEY=your_brevo_api_key
+   DEFAULT_SENDER_EMAIL=a.subair888@gmail.com
    MAIL_USERNAME="your-email@gmail.com"
    MAIL_PASSWORD="your-16-digit-app-password"
 
