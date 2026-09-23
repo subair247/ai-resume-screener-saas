@@ -1,29 +1,30 @@
-import spacy
-from sentence_transformers import SentenceTransformer
-
-_nlp = None
-_model = None
-
-def _get_nlp():
-    global _nlp
-    if _nlp is None:
-        _nlp = spacy.load("en_core_web_sm")
-    return _nlp
-
-def _get_model():
-    global _model
-    if _model is None:
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    return _model
+import gc
 
 def get_embedding(text: str):
     from sentence_transformers import SentenceTransformer
+    
+    # Load model locally for the request
     model = SentenceTransformer("all-MiniLM-L6-v2")
-    return model.encode(text).tolist()
+    embedding = model.encode(text).tolist()
+    
+    # Immediately clear memory to stay under Render's 512MB limit
+    del model
+    gc.collect()
+    
+    return embedding
 
 def extract_entities(text: str):
     import spacy
+    
+    # Load spacy locally for the request
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(text)
     skills = [ent.text for ent in doc.ents if ent.label_ in ["ORG", "PRODUCT", "SKILL"]]
-    return list(set(skills))
+    result = list(set(skills))
+    
+    # Immediately clear memory
+    del nlp
+    del doc
+    gc.collect()
+    
+    return result
