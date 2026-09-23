@@ -33,7 +33,7 @@ def send_interview_questions_email(recipient_email: str, candidate_name: str, qu
     """
     
     payload = {
-        "sender": {"name": "AI Resume Screener", "email": "contact@brevo.com"}, # Use Brevo's default/system domain
+        "sender": {"name": "AI Resume Screener", "email": "a.subair888@gmail.com"},
         "to": [{"email": recipient_email}],
         "subject": f"Technical Interview Questions - {candidate_name}",
         "htmlContent": html_content
