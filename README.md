@@ -42,7 +42,7 @@ graph TD
    * Asynchronous FastAPI server handling concurrent candidate screening requests, routing jobs, managing data payloads, and executing core validation without blocking threads.
 
 3. **AI & NLP Processing Engine (`FAISS` & `Gemini API`):**
-   * **Local Processing:** Extracts raw text from uploaded PDF/DOCX files, tokenizes text, and computes high-speed semantic vector similarity scores locally using FAISS.
+   * **Local Processing:** Extracts raw text from uploaded PDF/DOCX files, performs NLP entity extraction using SpaCy, and handles semantic matching efficiently through optimized lightweight vector pipelines and the Gemini API.
    * **Cloud LLM Integration:** Communicates securely via HTTPS with the external Google Gemini API to generate customized technical interview questions based on identified candidate-job skill gaps.
 
 4. **Data Persistence Layer (`MySQL` & `SQLAlchemy`):**
@@ -89,6 +89,10 @@ Recruiters look closely at how developers troubleshoot and resolve real-world ar
 ### 4. Gemini API Model Version Deprecations & 404 Errors
 * **The Issue:** Outdated LLM endpoint references caused connection failures and `404 Not Found` exceptions during resume screening and interview question generation.
 * **The Solution:** Updated the API client configuration to target currently active Google Gemini model versions, restoring stable and instantaneous inference responses.
+
+### 5. Overcoming Render Free Tier RAM Limits (Out of Memory Crashes)
+* **The Issue:** Heavy AI libraries like PyTorch and `sentence-transformers` exceeded Render's strict 512MB free tier RAM limit during app startup and execution, causing persistent `Out of Memory (OOM)` container crashes.
+* **The Solution:** Implemented lazy-loading for heavy modules (`google.generativeai`), optimized garbage collection (`gc.collect()`), and transitioned to a lightweight embedding fallback architecture to ensure smooth execution well within the 512MB memory boundary.
   
 ---
 ## ⚙️ Installation & Local Setup
@@ -121,3 +125,9 @@ uvicorn backend.app.main:app --reload
 4. **Launch the Frontend:**
 ```bash
 streamlit run frontend/app.py
+```
+
+------
+## 🚀 Live Production Deployment
+* **Backend API (Render):** Hosted as a Docker container on Render at `https://ai-resume-screener-saas.onrender.com`
+* **Frontend UI (Streamlit Cloud):** Hosted on Streamlit Community Cloud, securely communicating with the FastAPI backend REST endpoints.

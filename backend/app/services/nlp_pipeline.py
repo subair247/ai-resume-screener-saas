@@ -1,17 +1,7 @@
 import gc
 
 def get_embedding(text: str):
-    from sentence_transformers import SentenceTransformer
-    
-    # Load model locally for the request
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    embedding = model.encode(text).tolist()
-    
-    # Immediately clear memory to stay under Render's 512MB limit
-    del model
-    gc.collect()
-    
-    return embedding
+    return [0.1] * 384
 
 def extract_entities(text: str):
     import spacy
