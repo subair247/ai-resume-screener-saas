@@ -1,3 +1,4 @@
+import streamlit as st
 import requests
 
 BASE_URL = "https://ai-resume-screener-saas.onrender.com"
@@ -12,9 +13,14 @@ def register_user(email, password):
 
 def upload_resume(file):
     files = {"file": (file.name, file.getvalue(), file.type)}
-    response = requests.post(f"{BASE_URL}/upload/resume", files=files)
+    token = st.session_state.get("token")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    
+    response = requests.post(f"{BASE_URL}/upload/resume", files=files, headers=headers)
     return response
 
 def match_candidates(title, description):
-    response = requests.post(f"{BASE_URL}/screening/match", json={"title": title, "description": description})
+    token = st.session_state.get("token")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    response = requests.post(f"{BASE_URL}/screening/match", json={"title": title, "description": description}, headers=headers)
     return response
