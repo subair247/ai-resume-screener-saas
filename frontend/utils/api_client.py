@@ -1,6 +1,6 @@
 import requests
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://ai-resume-screener-saas.onrender.com"
 
 def login_user(email, password):
     response = requests.post(f"{BASE_URL}/auth/login", data={"username": email, "password": password})

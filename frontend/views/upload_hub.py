@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 import requests
 from frontend.utils.api_client import upload_resume, match_candidates
 
+API_URL = "https://ai-resume-screener-saas.onrender.com"
+
 def render():
     st.title("Resume Screening Hub")
     
@@ -147,7 +149,7 @@ def render():
                                     st.error("Please select an active job from the sidebar first!")
                                 else:
                                     response = requests.post(
-                                        f"http://127.0.0.1:8000/screening/generate-questions/{row['candidate_id']}",
+                                        f"{API_URL}/screening/generate-questions/{row['candidate_id']}",
                                         params={"job_id": active_job_id}
                                     )
                                     
@@ -166,7 +168,7 @@ def render():
                         st.markdown("#### 📧 Email Questions to Recruiter/Manager")
                         recipient_email = st.text_input("Recipient Email", key=f"email_input_{row['candidate_id']}")
                         
-                        if st.button("Send Questions via Email", key=f"email_btn_{row['candidate_id']}"):
+                        if st.button("Send Questions via Email", key=f"email_btn_{row['candidate_id']}_send"):
                             if not recipient_email:
                                 st.error("Please enter a recipient email address!")
                             else:
@@ -174,7 +176,7 @@ def render():
                                     try:
                                         active_job_id = st.session_state.get("current_job_id")
                                         email_res = requests.post(
-                                            f"http://127.0.0.1:8000/screening/send-questions-email/{row['candidate_id']}",
+                                            f"{API_URL}/screening/send-questions-email/{row['candidate_id']}",
                                             params={"job_id": active_job_id, "email": recipient_email}
                                         )
                                         if email_res.status_code == 200:

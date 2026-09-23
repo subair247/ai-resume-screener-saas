@@ -4,7 +4,7 @@ from frontend.views import login, upload_hub, analytics
 
 st.set_page_config(page_title="AI Resume Screener", layout="wide")
 
-API_URL = "http://127.0.0.1:8000"
+API_URL = "https://ai-resume-screener-saas.onrender.com"
 
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
