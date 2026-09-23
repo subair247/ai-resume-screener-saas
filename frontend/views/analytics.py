@@ -100,23 +100,14 @@ def render():
         st.markdown("---")
         st.subheader("Export Screening Reports")
         csv_data = df.to_csv(index=False).encode('utf-8')
-        col_exp1, col_exp2 = st.columns(2)
-        with col_exp1:
-            st.download_button(
-                label="Download CSV Report",
-                data=csv_data,
-                file_name="candidate_screening_report.csv",
-                mime="text/csv",
-                use_container_width=True
-            )
-        with col_exp2:
-            markdown_report = df.to_markdown(index=False)
-            st.download_button(
-                label="Download Text Report",
-                data=markdown_report,
-                file_name="candidate_screening_report.txt",
-                mime="text/plain",
-                use_container_width=True
-            )
+        
+       
+        st.download_button(
+            label="Download CSV Report",
+            data=csv_data,
+            file_name="candidate_screening_report.csv",
+            mime="text/csv",
+            use_container_width=True
+        )
     else:
         st.info("No screening data available. Please run a screening session in the Upload Hub first.")
