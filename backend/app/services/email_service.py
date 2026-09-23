@@ -33,12 +33,11 @@ def send_interview_questions_email(recipient_email: str, candidate_name: str, qu
     """
     
     payload = {
-        "sender": {"name": "AI Resume Screener", "email": "ai.resumescreener.saas@gmail.com"},
+        "sender": {"name": "AI Resume Screener SaaS", "email": "no-reply@brevo-mail.com"}, # Or use Brevo's system default sender
         "to": [{"email": recipient_email}],
         "subject": f"Technical Interview Questions - {candidate_name}",
         "htmlContent": html_content
     }
-    
     response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code in [200, 201, 202]:
