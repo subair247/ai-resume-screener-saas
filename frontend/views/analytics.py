@@ -11,6 +11,7 @@ def render():
         df = pd.DataFrame(results)
         
         if not df.empty and "email" in df.columns:
+            df["email"] = df["email"].astype(str).str.strip().str.lower()
             df = df.drop_duplicates(subset=["email"], keep="last")
             
         st.subheader("Overview Metrics")
