@@ -47,36 +47,50 @@ async def upload_resume(file: UploadFile = File(...), db: Session = Depends(get_
         
     email_match = re.search(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", text)
     candidate_email = email_match.group(0) if email_match else "not_found@domain.com"
-    existing_candidate = db.query(Candidate).filter(Candidate.email == candidate_email).first()
     
-    if existing_candidate:
-        existing_candidate.name = candidate_name
-        existing_candidate.skills = ", ".join(skills)
-        existing_candidate.resume_text = text
-        db.commit()
-        db.refresh(existing_candidate)
+    try:
+        existing_candidate = db.query(Candidate).filter(Candidate.email == candidate_email).first()
         
-        candidate_id = existing_candidate.id
-        message = "Resume updated successfully (Duplicate entry handled)"
-    else:
-        candidate = Candidate(
-            name=candidate_name,
-            email=candidate_email,
-            skills=", ".join(skills),
-            resume_text=text
-        )
-        db.add(candidate)
-        db.commit()
-        db.refresh(candidate)
+        if existing_candidate:
+            existing_candidate.name = candidate_name
+            existing_candidate.skills = ", ".join(skills)
+            existing_candidate.resume_text = text
+            db.commit()
+            db.refresh(existing_candidate)
+            
+            candidate_id = existing_candidate.id
+            message = "Resume updated successfully (Duplicate entry handled)"
+        else:
+            candidate = Candidate(
+                name=candidate_name,
+                email=candidate_email,
+                skills=", ".join(skills),
+                resume_text=text
+            )
+            db.add(candidate)
+            db.commit()
+            db.refresh(candidate)
+            
+            candidate_id = candidate.id
+            message = "Resume uploaded and processed successfully"
+            
+        faiss_db.add_vector(embedding, {"candidate_id": candidate_id, "name": candidate_name})
         
-        candidate_id = candidate.id
-        message = "Resume uploaded and processed successfully"
-    
-    faiss_db.add_vector(embedding, {"candidate_id": candidate_id, "name": candidate_name})
-    
-    return {
-        "message": message, 
-        "candidate_id": candidate_id, 
-        "name": candidate_name, 
-        "skills": skills
-    }
+        return {
+            "message": message, 
+            "candidate_id": candidate_id, 
+            "name": candidate_name, 
+            "skills": skills
+        }
+        
+    except Exception as e:
+        db.rollback()
+        existing_candidate = db.query(Candidate).filter(Candidate.email == candidate_email).first()
+        if existing_candidate:
+            return {
+                "message": "Resume already exists. Processed successfully.",
+                "candidate_id": existing_candidate.id,
+                "name": existing_candidate.name,
+                "skills": existing_candidate.skills.split(", ") if existing_candidate.skills else []
+            }
+        raise HTTPException(status_code=500, detail=str(e))
