@@ -12,15 +12,31 @@ def register_user(email, password):
     return response
 
 def upload_resume(file):
-    files = {"file": (file.name, file.getvalue(), file.type)}
-    token = st.session_state.get("token")
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
-    
-    response = requests.post(f"{BASE_URL}/upload/resume", files=files, headers=headers)
-    return response
+    try:
+        files = {"file": (file.name, file.getvalue(), file.type)}
+        token = st.session_state.get("token")
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        
+        response = requests.post(f"{BASE_URL}/upload/resume", files=files, headers=headers)
+        return response
+    except Exception as e:
+        class DummyResponse:
+            status_code = 500
+            text = str(e)
+            def json(self):
+                return {"detail": str(e)}
+        return DummyResponse()
 
 def match_candidates(title, description):
-    token = st.session_state.get("token")
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
-    response = requests.post(f"{BASE_URL}/screening/match", json={"title": title, "description": description}, headers=headers)
-    return response
+    try:
+        token = st.session_state.get("token")
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        response = requests.post(f"{BASE_URL}/screening/match", json={"title": title, "description": description}, headers=headers)
+        return response
+    except Exception as e:
+        class DummyResponse:
+            status_code = 500
+            text = str(e)
+            def json(self):
+                return {"detail": str(e)}
+        return DummyResponse()
