@@ -26,7 +26,7 @@ graph TD
     end
 
     %% Storage & External Services
-    Backend -->|Read/Write Structured Data| DB[(MySQL Relational Database)]
+    Backend -->|Read/Write Structured Data| DB[(PostgreSQL Relational Database)]
     LLM -->|External HTTPS Call| Gemini[Google Gemini Cloud LLM]
     Email -->|TLS Secure Auth| Gmail[Gmail SMTP Server]
 ```
@@ -45,7 +45,7 @@ graph TD
    * **Local Processing:** Extracts raw text from uploaded PDF/DOCX files, performs NLP entity extraction using SpaCy, and handles semantic matching efficiently through optimized lightweight vector pipelines and the Gemini API.
    * **Cloud LLM Integration:** Communicates securely via HTTPS with the external Google Gemini API to generate customized technical interview questions based on identified candidate-job skill gaps.
 
-4. **Data Persistence Layer (`MySQL` & `SQLAlchemy`):**
+4. **Data Persistence Layer (`PostgreSQL` & `SQLAlchemy`):**
    * Relational database storing structured data including user accounts, job descriptions, candidate metadata, and evaluation metrics via SQLAlchemy ORM mapping.
 
 5. **Notification & Communication Layer (`SMTP`):**
@@ -67,7 +67,7 @@ Automated Recruiter Notifications: Dispatches structured interview question repo
 
 * **Frontend:** Streamlit
 * **Backend:** FastAPI, Python
-* **Database & ORM:** MySQL, SQLAlchemy, Pydantic v2
+* **Database & ORM:** PostgreSQL, SQLAlchemy, Pydantic v2
 * **AI & NLP:** Gemini API, FAISS, custom semantic matching pipelines
 * **Communication:** Python `smtplib` for automated transactional emailing
 
@@ -95,8 +95,18 @@ Recruiters look closely at how developers troubleshoot and resolve real-world ar
 ### 5. Overcoming Render Free Tier RAM Limits (Out of Memory Crashes)
 * **The Issue:** Heavy AI libraries like PyTorch and `sentence-transformers` exceeded Render's strict 512MB free tier RAM limit during app startup and execution, causing persistent `Out of Memory (OOM)` container crashes.
 * **The Solution:** Implemented lazy-loading for heavy modules (`google.generativeai`), optimized garbage collection (`gc.collect()`), and transitioned to a lightweight embedding fallback architecture to ensure smooth execution well within the 512MB memory boundary.
-  
+
+### 6. Transitioning from Ephemeral SQLite to Managed PostgreSQL
+* **The Issue:** Using default local or ephemeral storage caused user registration data and authentication sessions to wipe out whenever Render containers restarted, leading to persistent "Invalid credentials" errors.
+
+* **The Solution:** Provisioned a managed PostgreSQL database instance on Render and linked it via internal connection strings (DATABASE_URL) with automated dialect compatibility parsing, ensuring 100% data persistence across server lifecycles.
+
+### 7. Analytics Row Deduplication & Markdown Export Compatibility
+* **The Issue:** Streamlined screening pipelines caused duplicate entry rows in analytics views based on overlapping candidate emails, while markdown export dependencies (tabulate) frequently threw build-time import errors on cloud servers.
+
+* **The Solution:** Implemented case-insensitive email deduplication (df.drop_duplicates) and replaced fragile markdown table exports with robust, clean CSV download handlers to ensure zero-error reporting.
 ---
+
 ## ⚙️ Installation & Local Setup
 
 1. **Clone the Repository:**
@@ -109,7 +119,7 @@ Recruiters look closely at how developers troubleshoot and resolve real-world ar
    Create a `.env` file in the root backend directory and add your credentials:
    ```env
    PROJECT_NAME="AI Resume Screener"
-   DATABASE_URL="mysql+pymysql://root:yourpassword@localhost:3306/resume_db"
+   DATABASE_URL="postgresql://user:password@localhost:5432/resume_db"
    SECRET_KEY="your-super-secret-key"
    ALGORITHM="HS256"
    ACCESS_TOKEN_EXPIRE_MINUTES=30
