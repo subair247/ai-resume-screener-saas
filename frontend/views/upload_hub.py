@@ -30,15 +30,25 @@ def render():
     if st.button("Run Screening"):
         res = match_candidates(job_title, job_desc)
         if res.status_code == 200:
-            data = res.json()
-            if isinstance(data, list):
-                st.session_state["matched_results"] = data
-            elif isinstance(data, dict):
-                st.session_state["matched_results"] = data.get("matched_candidates", data.get("results", data.get("data", [])))
-            
-            st.success("Matching completed successfully!")
+            try:
+                data = res.json()
+                if isinstance(data, list):
+                    st.session_state["matched_results"] = data
+                elif isinstance(data, dict):
+                    st.session_state["matched_results"] = data.get("matched_candidates", data.get("results", data.get("data", [])))
+                else:
+                    st.session_state["matched_results"] = []
+                
+                if st.session_state["matched_results"]:
+                    st.success(f"Matching completed successfully! Found {len(st.session_state['matched_results'])} candidates.")
+                else:
+                    st.warning("Matching completed, but no candidates found in the database. Please upload a resume first.")
+            except Exception as e:
+                st.error(f"Error parsing screening data: {e}")
+                st.session_state["matched_results"] = []
         else:
-            st.error("Screening failed")
+            st.error(f"Screening failed: {res.text}")
+            st.session_state["matched_results"] = []
 
     if "matched_results" in st.session_state and st.session_state["matched_results"]:
         st.markdown("---")
