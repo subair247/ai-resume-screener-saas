@@ -1,6 +1,8 @@
 from typing import List
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import uvicorn
 from app.core.database import engine, Base
 from app.models import user, candidate, job
 from app.api import auth, upload, screening, job
@@ -41,3 +43,7 @@ async def upload_multiple_resumes(files: List[UploadFile] = File(...)):
 @app.get("/")
 def root():
     return {"message": "AI Resume Screener Backend Running"}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
